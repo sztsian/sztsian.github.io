@@ -11,7 +11,7 @@ As a user, it's pretty straight forward to enable OATH token in FreeIPA on you o
 
 Firstly, login into FreeIPA with your own account. Click your own users from the 'Active users' table.
 
-Click the drop-down button 'Action' then you'll see 'Add OTP Token'. Click it.
+Click the drop-down button 'Actions' then you'll see 'Add OTP Token'. Click it.
 
 Then it will ask you to choose whether it's TOTP or HOTP. Choose on your own preference. You can file in something in `Description` to make it easier for you to tell your tokens apart. Then click 'Add'.
 
