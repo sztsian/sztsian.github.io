@@ -110,7 +110,13 @@ writing RSA key
 $ openssl x509 -outform DER -in testkey.crt -out testkey-crt.der
 ```
 
-Then the keys and certificate can be imported to a PKCS#11 token, for example, using pkcs11-tool like below.
+If the certificate is in pfx format but der format is needed, the private key and the client certificate without the chain can be extracted with the following commands.
+
+```
+$ openssl pkcs12 -in test-pkcs12.pfx -out test-pkcs12.crt -clcerts -nokeys
+$ openssl pkcs12 -in test-pkcs12.pfx -out test-pkcs12.key -nocerts
+```
+Then convert both to the proper format like above. For example, then the keys and certificate can be imported to a PKCS#11 token using pkcs11-tool like below.
 ```
 $ pkcs11-tool --login --write-object ~/tmp/testkey-key.der --type privkey --id 1
 $ pkcs11-tool --login --write-object ~/tmp/testkey-crt.der --type cert --id 1
@@ -118,10 +124,13 @@ $ pkcs11-tool --login --write-object ~/tmp/testkey-public.key --type pubkey --id
 
 ```
 
-One interesting finding: The gnupg-pkcs11-scd daemon can detect a key in token which the private key and certificate exists but not the public key. However, it does not work if only the private key and public key are in the token without the certificate.
+One interesting finding: The gnupg-pkcs11-scd daemon can detect a key in token which the private key and certificate exists but not the public key. However, it does not work if only the private key and public key are in the token without the certificate. That is because, the public key can be generated from the certificate but not vise versa.
+```
+openssl x509 -inform DER -in ~/tmp/testkey-crt.der -pubkey > ~/tmp/testkey-public.key
+```
 
 References:
 * [OpenSSL Cookbook](https://www.feistyduck.com/books/openssl-cookbook/)
 * [Importing key and certificate using pkcs11-tool and getting it from java application](https://wiki.onap.org/display/DW/Importing+key+and+certificate+using+pkcs11-tool+and+getting+it+from+java+application).
 * [How to convert a certificate into the appropriate format](https://knowledge.digicert.com/solution/SO26449.html)
-
+* A fork copy of [OpenSC test Sign, Verify, Encipher and Decipher from commandline with OpenSSL CLI](https://gist.github.com/sztsian/1d65e2be4d5467f85ba662c4554ecaa5)
